@@ -1,0 +1,20 @@
+name: adorepobck
+services:
+  backup:
+    container_name: adorepobck
+    image: adorepobck:latest
+    pull_policy: build
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    environment:
+      - DEVOPS_ORG_URL
+      - DEVOPS_PAT
+      - RETENTION_DAYS=1
+      - DRY_RUN=false
+      - WIKI=true
+      - NOCOMPRESS=false
+      - VERBOSE=false
+    volumes:
+      - ./data:/data
+
