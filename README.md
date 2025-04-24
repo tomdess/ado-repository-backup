@@ -70,9 +70,9 @@ If you don't want to install all those prerequisities or you want to isolate thi
 ### Istructions:
 
 ~~~
-$ git clone <repo> DevOps.BackupRepos
+$ git clone https://github.com/tomdess/ado-repository-backup.git
 
-$ cd DevOps.BackupRepos/docker
+$ cd ado-repository-backup
 ~~~
 create a .env file to store variables of ADO organization and PAT
 ~~~
@@ -83,13 +83,13 @@ DEVOPS_ORG_URL=https://dev.azure.com/MyOrg
 review the compose.yml file and change options if needed
 ~~~
 ➜  docker git:(master) ✗ docker compose config
-name: azreposbck
+name: adorepobck
 services:
   backup:
     build:
-      context: /home/tom/source/DevOps.BackupRepos
+      context: /home/tom/source/ado-repository-backup
       dockerfile: docker/Dockerfile
-    container_name: azreposbck
+    container_name: adorepobck
     environment:
       DEVOPS_ORG_URL: https://dev.azure.com/MyOrg
       DEVOPS_PAT: +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -98,19 +98,19 @@ services:
       RETENTION_DAYS: "1"
       VERBOSE: "false"
       WIKI: "true"
-    image: azreposbck:latest
+    image: adorepobck:latest
     networks:
       default: null
     pull_policy: build
     volumes:
       - type: bind
-        source: /home/tom/source/DevOps.BackupRepos/docker/data
+        source: /home/tom/source/ado-repository-backup/docker/data
         target: /data
         bind:
           create_host_path: true
 networks:
   default:
-    name: azreposbck_default
+    name: adorepobck_default
 
 ~~~
 
@@ -135,57 +135,57 @@ start docker container with compose:
  => [backup] exporting to image                                                                                                                                                0.0s
  => => exporting layers                                                                                                                                                        0.0s
  => => writing image sha256:5a764125e82f076a12bfa7328e27bd6f8891526f594b3dd371e9abf9dea7cc70                                                                                   0.0s
- => => naming to docker.io/library/azreposbck:latest                                                                                                                           0.0s
+ => => naming to docker.io/library/adorepobck:latest                                                                                                                           0.0s
  => [backup] resolving provenance for metadata file                                                                                                                            0.0s
 [+] Running 2/2
  ✔ backup                Built                                                                                                                                                 0.0s 
- ✔ Container azreposbck  Recreated                                                                                                                                             0.1s 
-Attaching to azreposbck
-azreposbck  | INFO: running script ./backup-devops.sh -p 4ksuw5gXXPFdjhvb2QZk54NuIwiSylOMAU5vf5S8V72yTwvzACu2JQQJ99BDACAAAAAT1IdTAAASAZDO1vzZ -o https://dev.azure.com/MyOrg -d /data -r 1   -w
-azreposbck  | === Azure DevOps Repository Backup Script ===
-azreposbck  | === Script parameters
-azreposbck  | ORGANIZATION_URL  = https://dev.azure.com/MyOrg
-azreposbck  | BACKUP_ROOT_PATH  = /data
-azreposbck  | RETENTION_DAYS    = 1
-azreposbck  | DRY_RUN           = false
-azreposbck  | PROJECT_WIKI      = true
-azreposbck  | VERBOSE_MODE      = false
-azreposbck  | COMPRESS          = true
-azreposbck  | === Install DevOps Extension
-azreposbck  | === Set AZURE_DEVOPS_EXT_PAT env variable
-azreposbck  | === Get project list
-azreposbck  | === Backup folder created [/data/202504221958]
-azreposbck  | ==> Found project [0] [lab]
-azreposbck  | ==> Backup project [0] [lab] [eb147cba-7fc6-4ab2-bbf9-3cc2a23f04dd]
-azreposbck  | === Backup folder created [/data/202504221958/lab]
-azreposbck  | ====> Backup repo [0][dcv2] [a84eeb8f-a39f-49be-aa27-14953f801652] [https://dev.azure.com/MyOrg/lab/_git/dcv2]
-azreposbck  | Cloning into '/data/202504221958/lab/repo/dcv2'...
-azreposbck  | ====> Backup repo [2][gitlab] [a6739d38-bc24-431f-b840-97c7701df79a] [https://dev.azure.com/MyOrg/lab/_git/gitlab]
-azreposbck  | Cloning into '/data/202504221958/lab/repo/gitlab'...
-azreposbck  | ====> Backup repo [3][gitversion] [28772289-eec6-43d7-8a90-89aa94f0eb8d] [https://dev.azure.com/MyOrg/lab/_git/gitversion]
-azreposbck  | Cloning into '/data/202504221958/lab/repo/gitversion'...
-azreposbck  | ====> Backup repo [4][lab] [7dd9fd5c-0cde-4b96-b419-20bb3c193c25] [https://dev.azure.com/MyOrg/lab/_git/lab]
-azreposbck  | Cloning into '/data/202504221958/lab/repo/lab'...
-azreposbck  | ====> Backup repo [5][versioning.v2] [f3a4a150-7cc7-4cc6-810a-3adaaea86d43] [https://dev.azure.com/MyOrg/lab/_git/versioning.v2]
-azreposbck  | Cloning into '/data/202504221958/lab/repo/versioning.v2'...
-azreposbck  | ====> Backup Wiki repo https://dev.azure.com/MyOrg/lab/_git/lab.wiki
-azreposbck  | Cloning into '/data/202504221958/lab/wiki/lab'...
-azreposbck  | remote: TF401019: The Git repository with name or identifier lab.wiki does not exist or you do not have permissions for the operation you are attempting.
-azreposbck  | fatal: repository 'https://dev.azure.com/MyOrg/lab/_git/lab.wiki/' not found
-azreposbck  | ====> WARNING: backup failed for repo [https://dev.azure.com/MyOrg/lab/_git/lab.wiki]
-azreposbck  | ====> WARNING: wiki not defined?
-azreposbck  | === Backup completed ===
-azreposbck  | Projects : 1
-azreposbck  | Repositories : 8
-azreposbck  | === Compress folder
-azreposbck  | Size : 13M        /data/202504221958 (uncompressed) - 6.7M        202504221958.tar.gz (compressed)
-azreposbck  | === Remove raw data in folder
-azreposbck  | === Apply retention policy (1 days):
-azreposbck  | === i'm going to delete following files:
-azreposbck  | /data/202504201852.tar.gz
-azreposbck  | === Done.
-azreposbck  | Elapsed time : 0 days 00 hr 00 min 18 sec
-azreposbck exited with code 0
+ ✔ Container adorepobck  Recreated                                                                                                                                             0.1s 
+Attaching to adorepobck
+adorepobck  | INFO: running script ./backup-devops.sh -p 4ksuw5gXXPFdjhvb2QZk54NuIwiSylOMAU5vf5S8V72yTwvzACu2JQQJ99BDACAAAAAT1IdTAAASAZDO1vzZ -o https://dev.azure.com/MyOrg -d /data -r 1   -w
+adorepobck  | === Azure DevOps Repository Backup Script ===
+adorepobck  | === Script parameters
+adorepobck  | ORGANIZATION_URL  = https://dev.azure.com/MyOrg
+adorepobck  | BACKUP_ROOT_PATH  = /data
+adorepobck  | RETENTION_DAYS    = 1
+adorepobck  | DRY_RUN           = false
+adorepobck  | PROJECT_WIKI      = true
+adorepobck  | VERBOSE_MODE      = false
+adorepobck  | COMPRESS          = true
+adorepobck  | === Install DevOps Extension
+adorepobck  | === Set AZURE_DEVOPS_EXT_PAT env variable
+adorepobck  | === Get project list
+adorepobck  | === Backup folder created [/data/202504221958]
+adorepobck  | ==> Found project [0] [lab]
+adorepobck  | ==> Backup project [0] [lab] [eb147cba-7fc6-4ab2-bbf9-3cc2a23f04dd]
+adorepobck  | === Backup folder created [/data/202504221958/lab]
+adorepobck  | ====> Backup repo [0][dcv2] [a84eeb8f-a39f-49be-aa27-14953f801652] [https://dev.azure.com/MyOrg/lab/_git/dcv2]
+adorepobck  | Cloning into '/data/202504221958/lab/repo/dcv2'...
+adorepobck  | ====> Backup repo [2][gitlab] [a6739d38-bc24-431f-b840-97c7701df79a] [https://dev.azure.com/MyOrg/lab/_git/gitlab]
+adorepobck  | Cloning into '/data/202504221958/lab/repo/gitlab'...
+adorepobck  | ====> Backup repo [3][gitversion] [28772289-eec6-43d7-8a90-89aa94f0eb8d] [https://dev.azure.com/MyOrg/lab/_git/gitversion]
+adorepobck  | Cloning into '/data/202504221958/lab/repo/gitversion'...
+adorepobck  | ====> Backup repo [4][lab] [7dd9fd5c-0cde-4b96-b419-20bb3c193c25] [https://dev.azure.com/MyOrg/lab/_git/lab]
+adorepobck  | Cloning into '/data/202504221958/lab/repo/lab'...
+adorepobck  | ====> Backup repo [5][versioning.v2] [f3a4a150-7cc7-4cc6-810a-3adaaea86d43] [https://dev.azure.com/MyOrg/lab/_git/versioning.v2]
+adorepobck  | Cloning into '/data/202504221958/lab/repo/versioning.v2'...
+adorepobck  | ====> Backup Wiki repo https://dev.azure.com/MyOrg/lab/_git/lab.wiki
+adorepobck  | Cloning into '/data/202504221958/lab/wiki/lab'...
+adorepobck  | remote: TF401019: The Git repository with name or identifier lab.wiki does not exist or you do not have permissions for the operation you are attempting.
+adorepobck  | fatal: repository 'https://dev.azure.com/MyOrg/lab/_git/lab.wiki/' not found
+adorepobck  | ====> WARNING: backup failed for repo [https://dev.azure.com/MyOrg/lab/_git/lab.wiki]
+adorepobck  | ====> WARNING: wiki not defined?
+adorepobck  | === Backup completed ===
+adorepobck  | Projects : 1
+adorepobck  | Repositories : 8
+adorepobck  | === Compress folder
+adorepobck  | Size : 13M        /data/202504221958 (uncompressed) - 6.7M        202504221958.tar.gz (compressed)
+adorepobck  | === Remove raw data in folder
+adorepobck  | === Apply retention policy (1 days):
+adorepobck  | === i'm going to delete following files:
+adorepobck  | /data/202504201852.tar.gz
+adorepobck  | === Done.
+adorepobck  | Elapsed time : 0 days 00 hr 00 min 18 sec
+adorepobck exited with code 0
 ~~~
 
 
