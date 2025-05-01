@@ -48,7 +48,7 @@ Interaction with the Azure DevOps API requires a [personal access token](https:/
 For this backup script you need to generate a PAT with read access on Code. Using the pipeline doesn't require this configuration because the pipeline uses the internal SYSTEM_ACCESS_TOKEN of build agent itself.
 
 ### Usage:
-
+```shell
      ./backup-devops.sh [-h] -p PAT -d backup-dir -o organization -r retention [-v] [-x] [-w] [-n]
      where:
           -h  show this help text
@@ -61,7 +61,7 @@ For this backup script you need to generate a PAT with read access on Code. Usin
           -x  dry run mode (no actual backup, only simulation) [default is false]
           -w  backup project wiki [default is true]
           -n  do not compress backup folder [default is true]
-
+```
 
 ## :whale: Run with docker compose
 
@@ -69,19 +69,19 @@ If you don't want to install all those prerequisities or you want to isolate thi
 
 ### Istructions:
 
-~~~
+~~~shell
 $ git clone https://github.com/tomdess/ado-repository-backup.git
 
 $ cd ado-repository-backup
 ~~~
 create a .env file to store variables of ADO organization and PAT
-~~~
+~~~shell
 $ cat .env 
 DEVOPS_PAT=+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 DEVOPS_ORG_URL=https://dev.azure.com/MyOrg
 ~~~
 review the compose.yml file and change options if needed
-~~~
+~~~shell
 ➜  docker git:(master) ✗ docker compose config
 name: adorepobck
 services:
@@ -115,7 +115,7 @@ networks:
 ~~~
 
 start docker container with compose:
-~~~
+~~~shell
 ➜  docker git:(master) ✗ docker compose up    
 [+] Building 0.1s (13/13) FINISHED                                                                                                                                   docker:default
  => [backup internal] load build definition from Dockerfile                                                                                                                    0.0s
