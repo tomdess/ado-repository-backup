@@ -1,0 +1,53 @@
+# Pipeline to perform the backup of source code in repositories on Azure DevOps organization
+# on a on-premise linux server (with azure devops agent installed as agent pool)
+# The pipeline launches the bash script in in src/backup-devops.sh using the system token as PAT
+# so there is no need to renew PAT or to remember when it expire
+#
+# Please note:
+# to permit the backup of other projects of the same project collection there are additional
+# configurations to do: (see https://learn.microsoft.com/en-us/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#configure-permissions-for-a-project-to-access-another-project-in-the-same-project-collection)
+# - basically you need to permit user Build Service account to access the repos of the other project.
+# Futhermore there is another setting at organization scope to tweak:
+# - Limit job authorization scope to current project for non-release pipelines must be enabled
+
+
+trigger: none
+
+variables:
+- name: AgentTagName  # var for tag name of the agent
+  value: 'myAgent'    # value of var AgentTagName
+
+# cron job to schedule the backup
+schedules:
+- cron: "30 1 * * *"
+  displayName: Scheduled backup
+  branches:
+    include:
+    - master
+  always: true
+
+pool:
+  name: BackupGIT
+  demands:
+    - agent.name -equals $(AgentTagName)
+  workspace:
+    clean: all
+
+stages:
+  - stage: backup
+    displayName: "Backup stage"
+    jobs:
+      - job: "BackupJob"
+        timeoutInMinutes: 180  # tweak timeout, default is 60 minutes
+        steps:
+        - task: DockerCompose@1
+          inputs:
+            containerregistrytype: 'Container Registry'
+            dockerRegistryEndpoint: 'registry-devops'
+            dockerComposeFile: '**/compose.yml'
+            dockerComposeFileArgs: |
+              DEVOPS_PAT=$(System.AccessToken)
+              DEVOPS_ORG_URL=$(System.TeamFoundationCollectionUri)
+            projectName: 'adorepobackup'
+            action: 'Run a Docker Compose command'
+            dockerComposeCommand: 'up --build'
