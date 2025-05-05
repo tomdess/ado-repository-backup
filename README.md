@@ -23,14 +23,12 @@ Initially a fork of https://github.com/lionelpere/azure-devops-repository-backup
 
 The `azure-pipelines.yml` file is ready to be used as azure devops yaml pipeline. It is required a linux host with azure devops agent installed.
 
-### Setup
+### Setup a pipeline that uses the bash script
 
 1. Create a new pipeline using the `azure-pipelines.yml` file
 2. Adjust the pipeline schedule as desired
 3. Replace the value of variable AgentTagName
 4. Adjust the script parameters to fit your needs
-
-## :construction: Azure DeOps pipeline using docker container
 
 ### Setup a pipeline that uses docker compose task
 
