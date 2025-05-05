@@ -32,7 +32,12 @@ The `azure-pipelines.yml` file is ready to be used as azure devops yaml pipeline
 
 ## :construction: Azure DeOps pipeline using docker container
 
-TODO
+### Setup a pipeline that uses docker compose task
+
+1. Create a new pipeline using the `azure-pipelines-docker.yml` file
+2. Adjust the pipeline schedule as desired
+3. Replace the value of variable AgentTagName
+4. Add further environment variables as `dockerComposeFileArgs` to change the defaults of script parameters
 
 ## :fire: Bash Script
 
